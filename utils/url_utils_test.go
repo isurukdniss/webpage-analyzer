@@ -53,7 +53,7 @@ func TestFetchURL(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			if test.name == "Network error" {
 				// Simulate a network error by not calling the server
-				body, err := FetchURL("http://non-existent-url")
+				body, err := utils.FetchURL("http://non-existent-url")
 				if body != test.expectedBody {
 					t.Errorf("expected body %q, got %q", test.expectedBody, body)
 				}
@@ -69,7 +69,7 @@ func TestFetchURL(t *testing.T) {
 			}))
 			defer server.Close()
 
-			body, err := FetchURL(server.URL)
+			body, err := utils.FetchURL(server.URL)
 
 			if body != test.expectedBody {
 				t.Errorf("Expected body '%s', got '%s'", test.expectedBody, body)

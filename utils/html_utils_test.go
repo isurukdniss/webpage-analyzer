@@ -8,6 +8,8 @@ import (
 	"golang.org/x/net/html"
 )
 
+var utils UtilProvider = &Utils{}
+
 func TestExtractHTMLVersion(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -81,7 +83,7 @@ func TestExtractHTMLVersion(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			htmlVersion := ExtractHTMLVersion(test.htmlStr)
+			htmlVersion := utils.ExtractHTMLVersion(test.htmlStr)
 
 			if htmlVersion != test.expected {
 				t.Errorf("Expected HTML version '%s', got '%s'", test.expected, htmlVersion)
@@ -126,7 +128,7 @@ func TestIsInternalLink(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			isInternalLink, _ := IsInternalLink(test.baseURL, test.targetURL)
+			isInternalLink, _ := utils.IsInternalLink(test.baseURL, test.targetURL)
 
 			if test.expected != isInternalLink {
 				t.Errorf("Expected '%t', got '%t'", test.expected, isInternalLink)
@@ -171,7 +173,7 @@ func TestIsLinkAccessible(t *testing.T) {
 			}))
 			defer server.Close()
 
-			isAccessible := IsLinkAccessible(server.URL)
+			isAccessible := utils.IsLinkAccessible(server.URL)
 
 			if isAccessible != test.expected {
 				t.Errorf("Expected '%t', got '%t'", test.expected, isAccessible)
@@ -200,7 +202,7 @@ func TestParseHTML(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			node, err := ParseHTML(test.html)
+			node, err := utils.ParseHTML(test.html)
 
 			if err != nil && !test.hasError {
 				t.Error("Expected HTML parse no error but error returned")
@@ -254,7 +256,7 @@ func TestExtractAttribute(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			res := ExtractAttribute(test.node, test.attr)
+			res := utils.ExtractAttribute(test.node, test.attr)
 
 			if res != test.expected {
 				t.Errorf("Expected attribute value '%s', got '%s'", test.expected, res)
@@ -293,7 +295,7 @@ func TestHasLoginForm(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			res := HasLoginForm(test.node)
+			res := utils.HasLoginForm(test.node)
 
 			if res != test.expected {
 				t.Errorf("Expected '%t', got '%t'", test.expected, res)

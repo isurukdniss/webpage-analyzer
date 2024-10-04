@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func FetchURL(url string) (string, error) {
+func (u *Utils) FetchURL(url string) (string, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return "", errors.New("unable to fetch the URL")

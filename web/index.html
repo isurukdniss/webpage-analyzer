@@ -20,18 +20,22 @@
     <div class="results-container">
         {{if .}}
             {{if .ErrorMessage}}
-                <p class="error">Error: {{.ErrorMessage}}</p>
+                <p class="error">{{.ErrorMessage}}</p>
             {{else}}
             
                 <h2>Analysis Results</h2>
                 <p>HTML Version: {{.HTMLVersion}}</p>
                 <p>Title: {{.Title}}</p>
-                <p>Headings Count:</p>
-                <ul>
-                    {{range $key, $value := .HeadingsCount}}
-                        <li>{{ $key }}: {{$value}}</li>
-                    {{end}}
-                </ul>
+                {{if eq (len .HeadingsCount) 0}}
+                    <p>Headings Count: No headings found</p>
+                {{else}}
+                    <p>Headings Count:</p>
+                    <ul>
+                        {{range $key, $value := .HeadingsCount}}
+                            <li>{{ $key }}: {{$value}}</li>
+                        {{end}}
+                    </ul>
+                {{end}}
                 <p>Internal Links: {{.InternalLinksCount}}</p>
                 <p>External Links: {{.ExternalLinksCount}}</p>
                 <p>Inaccessible Links: {{.InAccessibleLinks}}</p>

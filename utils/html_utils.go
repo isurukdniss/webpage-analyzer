@@ -11,8 +11,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-func RenderTemplate(w http.ResponseWriter, r *http.Request, templatePath string, data any) error { //TODO: test the any type
-
+func (u *Utils) RenderTemplate(w http.ResponseWriter, r *http.Request, templatePath string, data any) error {
 	t := template.Must(template.ParseFiles(templatePath))
 
 	if err := t.Execute(w, data); err != nil {
@@ -21,7 +20,7 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, templatePath string,
 	return nil
 }
 
-func ParseHTML(pageHtml string) (*html.Node, error) {
+func (u *Utils) ParseHTML(pageHtml string) (*html.Node, error) {
 	doc, err := html.Parse(strings.NewReader(pageHtml))
 	if err != nil {
 		return nil, err
@@ -30,7 +29,7 @@ func ParseHTML(pageHtml string) (*html.Node, error) {
 	return doc, nil
 }
 
-func ExtractAttribute(n *html.Node, attr string) string {
+func (u *Utils) ExtractAttribute(n *html.Node, attr string) string {
 	for _, a := range n.Attr {
 		if a.Key == attr {
 			return a.Val
@@ -39,13 +38,13 @@ func ExtractAttribute(n *html.Node, attr string) string {
 	return ""
 }
 
-func HasLoginForm(n *html.Node) bool {
-	attrVal := ExtractAttribute(n, "type")
+func (u *Utils) HasLoginForm(n *html.Node) bool {
+	attrVal := u.ExtractAttribute(n, "type")
 
 	return strings.ToLower(attrVal) == "password"
 }
 
-func ExtractTitle(n *html.Node) string {
+func (u *Utils) ExtractTitle(n *html.Node) string {
 	var title string
 
 	for c := n.FirstChild; c != nil; c = c.NextSibling {
@@ -56,7 +55,7 @@ func ExtractTitle(n *html.Node) string {
 	return title
 }
 
-func IsLinkAccessible(link string) bool {
+func (u *Utils) IsLinkAccessible(link string) bool {
 	client := http.Client{
 		Timeout: 5 * time.Second,
 	}
@@ -70,7 +69,7 @@ func IsLinkAccessible(link string) bool {
 	return res.StatusCode < 400
 }
 
-func ExtractHTMLVersion(htmlContent string) string {
+func (u *Utils) ExtractHTMLVersion(htmlContent string) string {
 	content := strings.ToLower(htmlContent)
 
 	if strings.HasPrefix(content, "<!doctype html>") {
@@ -88,7 +87,7 @@ func ExtractHTMLVersion(htmlContent string) string {
 	return "Unknown"
 }
 
-func IsInternalLink(baseURL string, targetURL string) (bool, error) {
+func (u *Utils) IsInternalLink(baseURL string, targetURL string) (bool, error) {
 	base, err := url.Parse(baseURL)
 	if err != nil {
 		return false, fmt.Errorf("invalid base URL: %w", err)

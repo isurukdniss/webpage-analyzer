@@ -1,12 +1,15 @@
 package analyzer
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/isurukdniss/webpage-analyzer/utils"
 
 	"golang.org/x/net/html"
 )
+
+var utilsInstance utils.UtilProvider = &utils.Utils{}
 
 type AnalyzerResult struct {
 	HTMLVersion        string
@@ -27,19 +30,19 @@ func Analyze(pageUrl string) *AnalyzerResult {
 	visited := make(map[string]bool)
 
 	// fetch url
-	body, err := utils.FetchURL(pageUrl)
+	body, err := utilsInstance.FetchURL(pageUrl)
 	if err != nil {
-		res.ErrorMessage = "Error analyzing the URL."
+		res.ErrorMessage = fmt.Sprintf("Error analyzing the URL: %v", err)
 
 	}
 
 	// parse html
-	doc, err := utils.ParseHTML(body)
+	doc, err := utilsInstance.ParseHTML(body)
 	if err != nil {
-		res.ErrorMessage = "Error analyzing the URL."
+		res.ErrorMessage = fmt.Sprintf("Error analyzing the URL: %v", err)
 	}
 
-	res.HTMLVersion = utils.ExtractHTMLVersion(body)
+	res.HTMLVersion = utilsInstance.ExtractHTMLVersion(body)
 
 	analyzeDoc(doc, pageUrl, visited, res)
 
@@ -55,17 +58,17 @@ func analyzeDoc(n *html.Node, baseURL string, visited map[string]bool, res *Anal
 	if n.Type == html.ElementNode {
 		switch n.Data {
 		case "title":
-			res.Title = utils.ExtractTitle(n)
+			res.Title = utilsInstance.ExtractTitle(n)
 		case "h1", "h2", "h3", "h4", "h5", "h6":
 			res.HeadingsCount[n.Data]++
 		case "input":
 
-			res.HasLoginForm = utils.HasLoginForm(n)
+			res.HasLoginForm = utilsInstance.HasLoginForm(n)
 		case "a":
-			link := utils.ExtractAttribute(n, "href")
+			link := utilsInstance.ExtractAttribute(n, "href")
 			if !visited[link] {
 				visited[link] = true
-				if isInternal, _ := utils.IsInternalLink(baseURL, link); isInternal { // Handle error
+				if isInternal, _ := utilsInstance.IsInternalLink(baseURL, link); isInternal { // Handle error
 					res.InternalLinksCount++
 				} else {
 					res.ExternalLinksCount++
@@ -90,7 +93,7 @@ func getInaccessibleLinksCount(urlList []string) int {
 
 		go func(link string) {
 			defer wg.Done()
-			if !utils.IsLinkAccessible(link) {
+			if !utilsInstance.IsLinkAccessible(link) {
 				mu.Lock()
 				count++
 				mu.Unlock()

@@ -7,10 +7,11 @@ import (
 	"github.com/isurukdniss/webpage-analyzer/utils"
 )
 
+var utilsInstance utils.UtilProvider = &utils.Utils{}
 var templatePath = "web/index.html"
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	err := utils.RenderTemplate(w, r, templatePath, nil)
+	err := utilsInstance.RenderTemplate(w, r, templatePath, nil)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -23,7 +24,7 @@ func AnalyzeHandler(w http.ResponseWriter, r *http.Request) {
 		res := analyzer.Analyze(formURL)
 
 		// Render the html
-		err := utils.RenderTemplate(w, r, templatePath, res)
+		err := utilsInstance.RenderTemplate(w, r, templatePath, res)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
