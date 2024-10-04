@@ -8,6 +8,9 @@ import (
 )
 
 func main() {
+	fs := http.FileServer(http.Dir("web/styles"))
+	http.Handle("/styles/", http.StripPrefix("/styles/", fs))
+
 	http.HandleFunc("/", handler.IndexHandler)
 	http.HandleFunc("/analyze", handler.AnalyzeHandler)
 

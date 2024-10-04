@@ -4,33 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Webpage Analyzer</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <script>
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('analyzeForm').style.display = 'none';
+        }
+    </script>
 </head>
 <body>
     <h1>Webpage Analyzer</h1>
-    {{if .}}
-        {{if .ErrorMessage}}
-            <p class="error">Error: {{.ErrorMessage}}</p>
+    <div id="loading" style="display:none;">
+        <p>Loading... Please wait while the analysis is being performed.</p>
+    </div>
+    <div class="results-container">
+        {{if .}}
+            {{if .ErrorMessage}}
+                <p class="error">Error: {{.ErrorMessage}}</p>
+            {{else}}
+            
+                <h2>Analysis Results</h2>
+                <p>HTML Version: {{.HTMLVersion}}</p>
+                <p>Title: {{.Title}}</p>
+                <p>Headings Count:</p>
+                <ul>
+                    {{range $key, $value := .HeadingsCount}}
+                        <li>{{ $key }}: {{$value}}</li>
+                    {{end}}
+                </ul>
+                <p>Internal Links: {{.InternalLinksCount}}</p>
+                <p>External Links: {{.ExternalLinksCount}}</p>
+                <p>Inaccessible Links: {{.InAccessibleLinks}}</p>
+                <p>Login Form: {{.HasLoginForm}}</p>
+            {{end}}
+            <a href="/">Analyze another URL</a>
         {{else}}
-            <h2>Analysis Results</h2>
-            <p>HTML Version: {{.HTMLVersion}}</p>
-            <p>Title: {{.Title}}</p>
-            <p>Headings Count:</p>
-            <ul>
-                {{range $key, $value := .HeadingsCount}}
-                    <li>{{ $key }}: {{$value}}</li>
-                {{end}}
-            </ul>
-            <p>Internal Links: {{.InternalLinksCount}}</p>
-            <p>External Links: {{.ExternalLinksCount}}</p>
-            <p>Inaccessible Links: {{.InAccessibleLinks}}</p>
-            <p>Login Form: {{.HasLoginForm}}</p>
+            <form id="analyzeForm" action="/analyze" method="post" onsubmit="showLoading()">
+                <input type="text" name="url" placeholder="https://example.com/" required>
+                <button type="submit">Analyze URL</button>
+            </form>
         {{end}}
-        <a href="/">Analyze another URL</a>
-    {{else}}
-        <form id="analyzeForm" action="/analyze" method="post">
-            <input type="text" name="url" placeholder="https://example.com/" required>
-            <button type="submit">Analyze URL</button>
-        </form>
-    {{end}}
+    </div>
 </body>
 </html>
