@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/isurukdniss/webpage-analyzer/analyzer"
 	"github.com/isurukdniss/webpage-analyzer/utils"
 )
 
@@ -16,4 +17,16 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func AnalyzeHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		// Execute the analyze logic
+		formURL := r.FormValue("url")
+		res := analyzer.Analyze(formURL)
+
+		// Render the html
+		err := utils.RenderTemplate(w, r, templatePath, res)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
 }

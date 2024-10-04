@@ -9,7 +9,7 @@ import (
 
 func main() {
 	http.HandleFunc("/", handler.IndexHandler)
-	http.HandleFunc("/analyzer", handler.AnalyzeHandler)
+	http.HandleFunc("/analyze", handler.AnalyzeHandler)
 
 	log.Println("Server running at :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

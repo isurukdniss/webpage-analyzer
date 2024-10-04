@@ -7,5 +7,30 @@
 </head>
 <body>
     <h1>Webpage Analyzer</h1>
+    {{if .}}
+        {{if .ErrorMessage}}
+            <p class="error">Error: {{.ErrorMessage}}</p>
+        {{else}}
+            <h2>Analysis Results</h2>
+            <p>HTML Version: {{.HTMLVersion}}</p>
+            <p>Title: {{.Title}}</p>
+            <p>Headings Count:</p>
+            <ul>
+                {{range $key, $value := .HeadingsCount}}
+                    <li>{{ $key }}: {{$value}}</li>
+                {{end}}
+            </ul>
+            <p>Internal Links: {{.InternalLinksCount}}</p>
+            <p>External Links: {{.ExternalLinksCount}}</p>
+            <p>Inaccessible Links: {{.InAccessibleLinks}}</p>
+            <p>Login Form: {{.HasLoginForm}}</p>
+        {{end}}
+        <a href="/">Analyze another URL</a>
+    {{else}}
+        <form id="analyzeForm" action="/analyze" method="post">
+            <input type="text" name="url" placeholder="https://example.com/" required>
+            <button type="submit">Analyze URL</button>
+        </form>
+    {{end}}
 </body>
 </html>
