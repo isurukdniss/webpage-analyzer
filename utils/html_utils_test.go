@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"golang.org/x/net/html"
 )
 
 func TestExtractHTMLVersion(t *testing.T) {
@@ -206,6 +208,95 @@ func TestParseHTML(t *testing.T) {
 
 			if node == nil && !test.hasError {
 				t.Error("Expected HTML parse an error but no error returned")
+			}
+		})
+	}
+}
+
+func TestExtractAttribute(t *testing.T) {
+	tests := []struct {
+		name     string
+		node     *html.Node
+		attr     string
+		expected string
+	}{
+		{
+			name: "Contains the Attribute",
+			node: &html.Node{
+				Attr: []html.Attribute{
+					{Key: "class", Val: "my-class"},
+					{Key: "href", Val: "/test"},
+				},
+			},
+			attr:     "href",
+			expected: "/test",
+		},
+		{
+			name: "Doesn't contain the Attribute",
+			node: &html.Node{
+				Attr: []html.Attribute{
+					{Key: "class", Val: "my-class"},
+					{Key: "href", Val: "/test"},
+				},
+			},
+			attr:     "id",
+			expected: "",
+		},
+		{
+			name: "Empty Attribute",
+			node: &html.Node{
+				Attr: []html.Attribute{},
+			},
+			attr:     "id",
+			expected: "",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			res := ExtractAttribute(test.node, test.attr)
+
+			if res != test.expected {
+				t.Errorf("Expected attribute value '%s', got '%s'", test.expected, res)
+			}
+		})
+	}
+}
+
+func TestHasLoginForm(t *testing.T) {
+	tests := []struct {
+		name     string
+		node     *html.Node
+		expected bool
+	}{
+		{
+			name: "Contains the password input",
+			node: &html.Node{
+				Attr: []html.Attribute{
+					{Key: "class", Val: "my-class"},
+					{Key: "type", Val: "password"},
+				},
+			},
+			expected: true,
+		},
+		{
+			name: "No password input",
+			node: &html.Node{
+				Attr: []html.Attribute{
+					{Key: "class", Val: "my-class"},
+					{Key: "id", Val: "my-id"},
+				},
+			},
+			expected: false,
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			res := HasLoginForm(test.node)
+
+			if res != test.expected {
+				t.Errorf("Expected '%t', got '%t'", test.expected, res)
 			}
 		})
 	}
