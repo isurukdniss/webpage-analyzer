@@ -23,7 +23,13 @@ type AnalyzerResult struct {
 	ExternalLinks      []string
 }
 
-func Analyze(pageUrl string) *AnalyzerResult {
+type PageAnalyzer interface {
+	Analyze(pageUrl string) *AnalyzerResult
+}
+
+type Analyzer struct{}
+
+func (a *Analyzer) Analyze(pageUrl string) *AnalyzerResult {
 	res := &AnalyzerResult{
 		HeadingsCount: make(map[string]int),
 	}

@@ -10,6 +10,8 @@ import (
 	"github.com/isurukdniss/webpage-analyzer/utils/mocks"
 )
 
+var pageAnalyzer PageAnalyzer = &Analyzer{}
+
 func TestAnalyze(t *testing.T) {
 	// mock the utils package
 	ctrl := gomock.NewController(t)
@@ -45,7 +47,7 @@ func TestAnalyze(t *testing.T) {
 	mockUtils.EXPECT().IsInternalLink(pageURL, "http://test.com").Return(false, nil).Times(1)
 	mockUtils.EXPECT().IsLinkAccessible(gomock.Any()).Return(true)
 
-	res := Analyze(pageURL)
+	res := pageAnalyzer.Analyze(pageURL)
 
 	if res.Title != expectedTitle {
 		t.Errorf("Expected title %s, got %s", expectedTitle, res.Title)

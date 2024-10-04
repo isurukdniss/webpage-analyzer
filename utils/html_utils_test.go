@@ -303,3 +303,37 @@ func TestHasLoginForm(t *testing.T) {
 		})
 	}
 }
+
+func TestExtractTitle(t *testing.T) {
+	tests := []struct {
+		name     string
+		node     *html.Node
+		expected string
+	}{
+		{
+			name: "Has title",
+			node: &html.Node{
+				FirstChild: &html.Node{
+					Type: html.TextNode,
+					Data: "Test title",
+				},
+			},
+			expected: "Test title",
+		},
+		{
+			name:     "Title deos not exist",
+			node:     &html.Node{},
+			expected: "",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			res := utils.ExtractTitle(test.node)
+
+			if res != test.expected {
+				t.Errorf("Expected title '%s', got '%s'", test.expected, res)
+			}
+		})
+	}
+}
