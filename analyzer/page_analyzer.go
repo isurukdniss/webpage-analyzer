@@ -2,6 +2,7 @@ package analyzer
 
 import (
 	"fmt"
+	"strings"
 	"sync"
 
 	"github.com/isurukdniss/webpage-analyzer/utils"
@@ -38,8 +39,7 @@ func (a *Analyzer) Analyze(pageUrl string) *AnalyzerResult {
 	// fetch url
 	body, err := utilsInstance.FetchURL(pageUrl)
 	if err != nil {
-		res.ErrorMessage = fmt.Sprintf("Error analyzing the URL: %v", err)
-
+		res.ErrorMessage = handleErrorMsg(err)
 	}
 
 	// parse html
@@ -109,4 +109,25 @@ func getInaccessibleLinksCount(urlList []string) int {
 	}
 	wg.Wait()
 	return count
+}
+
+func handleErrorMsg(err error) string {
+	if strings.Contains(err.Error(), "invalid URI for request") {
+		return "The provided URL is not valid. Please check the format and try again."
+	}
+	if err.Error() == "invalid URL: missing scheme or host" {
+		return "The URL is missing a scheme (like 'http' or 'https') or a host. Please provide a complete URL."
+	}
+	if err.Error() == "unable to fetch the URL" {
+		return "We were unable to fetch the requested URL. Please check your internet connection or the URL."
+	}
+	if strings.Contains(err.Error(), "status code") {
+		split := strings.Split(err.Error(), " ")
+		sc := split[len(split)-1]
+		return fmt.Sprintf("The server returned a status code of %s. Please ensure you have the necessary permissions.", sc)
+	}
+	if err.Error() == "error reading the response body" {
+		return "An error occurred while reading the response. Please try again later."
+	}
+	return "An unexpected error occurred. Please try again."
 }

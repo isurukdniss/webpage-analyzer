@@ -30,7 +30,7 @@ func TestFetchURL(t *testing.T) {
 			statusCode:    http.StatusNotFound,
 			responseBody:  "",
 			expectedBody:  "",
-			expectedError: fmt.Errorf("unexpected status code received. status code: %d", http.StatusNotFound),
+			expectedError: fmt.Errorf("unexpected status code: %d", http.StatusNotFound),
 		},
 		{
 			name:          "Network error",

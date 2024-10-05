@@ -1,6 +1,7 @@
 package analyzer
 
 import (
+	"errors"
 	"strings"
 	"testing"
 
@@ -65,4 +66,45 @@ func TestAnalyze(t *testing.T) {
 		t.Errorf("Expected inaccessible links count %d, got %d", expectedInaccessibleLinksCount, res.InternalLinksCount)
 	}
 
+}
+
+func TestHandleErrorMsg(t *testing.T) {
+	tests := []struct {
+		err      error
+		expected string
+	}{
+		{
+			err:      errors.New("invalid URI for request"),
+			expected: "The provided URL is not valid. Please check the format and try again.",
+		},
+		{
+			err:      errors.New("invalid URL: missing scheme or host"),
+			expected: "The URL is missing a scheme (like 'http' or 'https') or a host. Please provide a complete URL.",
+		},
+		{
+			err:      errors.New("unable to fetch the URL"),
+			expected: "We were unable to fetch the requested URL. Please check your internet connection or the URL.",
+		},
+		{
+			err:      errors.New("server returned status code 404"),
+			expected: "The server returned a status code of 404. Please ensure you have the necessary permissions.",
+		},
+		{
+			err:      errors.New("error reading the response body"),
+			expected: "An error occurred while reading the response. Please try again later.",
+		},
+		{
+			err:      errors.New("some unexpected error"),
+			expected: "An unexpected error occurred. Please try again.",
+		},
+	}
+
+	for _, test := range tests {
+		t.Run(test.err.Error(), func(t *testing.T) {
+			result := handleErrorMsg(test.err)
+			if result != test.expected {
+				t.Errorf("Expected error message %q, got %q", test.expected, result)
+			}
+		})
+	}
 }
