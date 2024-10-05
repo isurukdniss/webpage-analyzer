@@ -45,14 +45,10 @@ func (u *Utils) HasLoginForm(n *html.Node) bool {
 }
 
 func (u *Utils) ExtractTitle(n *html.Node) string {
-	var title string
-
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		if c.Type == html.TextNode {
-			title = c.Data
-		}
+	if n.FirstChild != nil {
+		return n.FirstChild.Data
 	}
-	return title
+	return ""
 }
 
 func (u *Utils) IsLinkAccessible(link string) bool {
@@ -71,6 +67,7 @@ func (u *Utils) IsLinkAccessible(link string) bool {
 
 func (u *Utils) ExtractHTMLVersion(htmlContent string) string {
 	content := strings.ToLower(htmlContent)
+	content = strings.Trim(content, "\n")
 
 	if strings.HasPrefix(content, "<!doctype html>") {
 		return "HTML 5"

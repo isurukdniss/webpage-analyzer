@@ -24,22 +24,22 @@
             {{else}}
             
                 <h2>Analysis Results</h2>
-                <p>HTML Version: {{.HTMLVersion}}</p>
-                <p>Title: {{.Title}}</p>
+                <p><strong>HTML Version:</strong> {{.HTMLVersion}}</p>
+                <p><strong>Title:</strong> {{.Title}}</p>
                 {{if eq (len .HeadingsCount) 0}}
-                    <p>Headings Count: No headings found</p>
+                    <p><strong>Headings Count: No headings found</strong></p>
                 {{else}}
-                    <p>Headings Count:</p>
+                    <p><strong>Headings Count:</strong></p>
                     <ul>
                         {{range $key, $value := .HeadingsCount}}
                             <li>{{ $key }}: {{$value}}</li>
                         {{end}}
                     </ul>
                 {{end}}
-                <p>Internal Links: {{.InternalLinksCount}}</p>
-                <p>External Links: {{.ExternalLinksCount}}</p>
-                <p>Inaccessible Links: {{.InAccessibleLinks}}</p>
-                <p>Login Form: {{.HasLoginForm}}</p>
+                <p><strong>Internal Links:</strong> {{.InternalLinksCount}}</p>
+                <p><strong>External Links:</strong> {{.ExternalLinksCount}}</p>
+                <p><strong>Inaccessible Links:</strong> {{.InAccessibleLinks}}</p>
+                <p><strong>Has Login Form:</strong> {{if .HasLoginForm}}Yes{{else}}No{{end}}</p>
             {{end}}
             <a href="/">Analyze another URL</a>
         {{else}}

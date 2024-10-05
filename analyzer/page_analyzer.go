@@ -64,11 +64,12 @@ func analyzeDoc(n *html.Node, baseURL string, visited map[string]bool, res *Anal
 	if n.Type == html.ElementNode {
 		switch n.Data {
 		case "title":
-			res.Title = utilsInstance.ExtractTitle(n)
+			if res.Title == "" {
+				res.Title = utilsInstance.ExtractTitle(n)
+			}
 		case "h1", "h2", "h3", "h4", "h5", "h6":
 			res.HeadingsCount[n.Data]++
 		case "input":
-
 			res.HasLoginForm = utilsInstance.HasLoginForm(n)
 		case "a":
 			link := utilsInstance.ExtractAttribute(n, "href")
