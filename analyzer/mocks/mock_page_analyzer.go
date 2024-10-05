@@ -40,15 +40,15 @@ func (m *MockPageAnalyzer) EXPECT() *MockPageAnalyzerMockRecorder {
 }
 
 // Analyze mocks base method.
-func (m *MockPageAnalyzer) Analyze(pageUrl string) *analyzer.AnalyzerResult {
+func (m *MockPageAnalyzer) Analyze(pageURL string) *analyzer.Result {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Analyze", pageUrl)
-	ret0, _ := ret[0].(*analyzer.AnalyzerResult)
+	ret := m.ctrl.Call(m, "Analyze", pageURL)
+	ret0, _ := ret[0].(*analyzer.Result)
 	return ret0
 }
 
 // Analyze indicates an expected call of Analyze.
-func (mr *MockPageAnalyzerMockRecorder) Analyze(pageUrl any) *gomock.Call {
+func (mr *MockPageAnalyzerMockRecorder) Analyze(pageURL any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Analyze", reflect.TypeOf((*MockPageAnalyzer)(nil).Analyze), pageUrl)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Analyze", reflect.TypeOf((*MockPageAnalyzer)(nil).Analyze), pageURL)
 }

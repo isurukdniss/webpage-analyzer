@@ -81,7 +81,7 @@ func TestAnalyzeHandler(t *testing.T) {
 	utilsInstance = mockUtils
 
 	formURL := "http://example.com"
-	expectedResult := &analyzer.AnalyzerResult{
+	expectedResult := &analyzer.Result{
 		HTMLVersion:        "HTML5",
 		Title:              "Example Title",
 		HeadingsCount:      map[string]int{"h1": 1, "h2": 2},

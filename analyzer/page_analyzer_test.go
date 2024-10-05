@@ -45,7 +45,7 @@ func TestAnalyze(t *testing.T) {
 	mockUtils.EXPECT().ExtractHTMLVersion(body).Return(expectedHTMLVersion)
 	mockUtils.EXPECT().ExtractTitle(gomock.Any()).Return(expectedTitle).Times(1)
 	mockUtils.EXPECT().ExtractAttribute(gomock.Any(), "href").Return("http://test.com").Times(1)
-	mockUtils.EXPECT().IsInternalLink(pageURL, "http://test.com").Return(false, nil).Times(1)
+	mockUtils.EXPECT().IsInternalLink(pageURL, "http://test.com").Return(false).Times(1)
 	mockUtils.EXPECT().IsLinkAccessible(gomock.Any()).Return(true)
 
 	res := pageAnalyzer.Analyze(pageURL)

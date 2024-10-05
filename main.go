@@ -7,9 +7,12 @@ import (
 	"github.com/isurukdniss/webpage-analyzer/handler"
 )
 
+var stylesPathPattern = "/styles/"
+var stylesDir = "web/styles"
+
 func main() {
-	fs := http.FileServer(http.Dir("web/styles"))
-	http.Handle("/styles/", http.StripPrefix("/styles/", fs))
+	fs := http.FileServer(http.Dir(stylesDir))
+	http.Handle(stylesPathPattern, http.StripPrefix(stylesPathPattern, fs))
 
 	http.HandleFunc("/", handler.IndexHandler)
 	http.HandleFunc("/analyze", handler.AnalyzeHandler)

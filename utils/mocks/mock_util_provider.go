@@ -112,12 +112,11 @@ func (mr *MockUtilProviderMockRecorder) HasLoginForm(n any) *gomock.Call {
 }
 
 // IsInternalLink mocks base method.
-func (m *MockUtilProvider) IsInternalLink(baseURL, targetURL string) (bool, error) {
+func (m *MockUtilProvider) IsInternalLink(baseURL, targetURL string) bool {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "IsInternalLink", baseURL, targetURL)
 	ret0, _ := ret[0].(bool)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	return ret0
 }
 
 // IsInternalLink indicates an expected call of IsInternalLink.
@@ -141,18 +140,18 @@ func (mr *MockUtilProviderMockRecorder) IsLinkAccessible(link any) *gomock.Call 
 }
 
 // ParseHTML mocks base method.
-func (m *MockUtilProvider) ParseHTML(pageHtml string) (*html.Node, error) {
+func (m *MockUtilProvider) ParseHTML(pageHTML string) (*html.Node, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ParseHTML", pageHtml)
+	ret := m.ctrl.Call(m, "ParseHTML", pageHTML)
 	ret0, _ := ret[0].(*html.Node)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // ParseHTML indicates an expected call of ParseHTML.
-func (mr *MockUtilProviderMockRecorder) ParseHTML(pageHtml any) *gomock.Call {
+func (mr *MockUtilProviderMockRecorder) ParseHTML(pageHTML any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ParseHTML", reflect.TypeOf((*MockUtilProvider)(nil).ParseHTML), pageHtml)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ParseHTML", reflect.TypeOf((*MockUtilProvider)(nil).ParseHTML), pageHTML)
 }
 
 // RenderTemplate mocks base method.

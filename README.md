@@ -38,7 +38,7 @@ The web server will start on `http://localhost:8080`. Please navigate to that UR
 ```
 make build
 ```
-The executable file can be found in the `/bin` direcotry.
+The executable file can be found in the `/bin` directory.
 
 #### Run Unit Tests
 ```
@@ -50,9 +50,15 @@ make test
 make clean
 ```
 
+## Continues Integration
+The Continues Integration is achieved using the GitHub Actions. A workflow builds the project and run all unit test when a new commit is pushed to the `main` branch or a pull request is merged to the `main` branch.
+
+Workflow runs can be found [here](https://github.com/isurukdniss/webpage-analyzer/actions). 
+
 ## Suggested Improvements
-- Improving the UI with more advanced styling or using a front-end framework like React or Vue
-- Configure automated deployment to a cloud platform (eg. GCP CloudRun)
+- Improving the UI with more advanced styling or using a front-end framework like React or Vue.
+- Containerization of the application.
+- Configure automated deployment to a cloud platform (eg. GCP CloudRun).
 
 
 

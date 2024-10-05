@@ -1,16 +1,14 @@
 package utils
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
-	"net/url"
 	"strings"
-	"time"
 
 	"golang.org/x/net/html"
 )
 
+// RenderTemplate renders the specified template with the given data
 func (u *Utils) RenderTemplate(w http.ResponseWriter, r *http.Request, templatePath string, data any) error {
 	t := template.Must(template.ParseFiles(templatePath))
 
@@ -20,8 +18,9 @@ func (u *Utils) RenderTemplate(w http.ResponseWriter, r *http.Request, templateP
 	return nil
 }
 
-func (u *Utils) ParseHTML(pageHtml string) (*html.Node, error) {
-	doc, err := html.Parse(strings.NewReader(pageHtml))
+// ParseHTML parses the HTML content and return as a HTML node tree
+func (u *Utils) ParseHTML(pageHTML string) (*html.Node, error) {
+	doc, err := html.Parse(strings.NewReader(pageHTML))
 	if err != nil {
 		return nil, err
 	}
@@ -29,6 +28,7 @@ func (u *Utils) ParseHTML(pageHtml string) (*html.Node, error) {
 	return doc, nil
 }
 
+// ExtractAttribute returns the value of the given attribute from the specified HTML node
 func (u *Utils) ExtractAttribute(n *html.Node, attr string) string {
 	for _, a := range n.Attr {
 		if a.Key == attr {
@@ -38,12 +38,14 @@ func (u *Utils) ExtractAttribute(n *html.Node, attr string) string {
 	return ""
 }
 
+// HasLoginForm checks the given HTML node has a login form
 func (u *Utils) HasLoginForm(n *html.Node) bool {
 	attrVal := u.ExtractAttribute(n, "type")
 
 	return strings.ToLower(attrVal) == "password"
 }
 
+// ExtractTitle returns the value of the title element in the specified HTML node
 func (u *Utils) ExtractTitle(n *html.Node) string {
 	if n.FirstChild != nil {
 		return n.FirstChild.Data
@@ -51,20 +53,7 @@ func (u *Utils) ExtractTitle(n *html.Node) string {
 	return ""
 }
 
-func (u *Utils) IsLinkAccessible(link string) bool {
-	client := http.Client{
-		Timeout: 5 * time.Second,
-	}
-
-	res, err := client.Head(link)
-	if err != nil {
-		return false
-	}
-	defer res.Body.Close()
-
-	return res.StatusCode < 400
-}
-
+// ExtractHTMLVersion returns the version of the HTML of the given HTML content
 func (u *Utils) ExtractHTMLVersion(htmlContent string) string {
 	content := strings.ToLower(htmlContent)
 	content = strings.Trim(content, "\n")
@@ -82,24 +71,4 @@ func (u *Utils) ExtractHTMLVersion(htmlContent string) string {
 	}
 
 	return "Unknown"
-}
-
-func (u *Utils) IsInternalLink(baseURL string, targetURL string) (bool, error) {
-	base, err := url.Parse(baseURL)
-	if err != nil {
-		return false, fmt.Errorf("invalid base URL: %w", err)
-	}
-
-	target, err := url.Parse(targetURL)
-	if err != nil {
-		return false, fmt.Errorf("invalid target URL: %w", err)
-	}
-
-	if !target.IsAbs() {
-		return true, nil
-	}
-
-	hasSameHost := strings.EqualFold(base.Host, target.Host)
-
-	return hasSameHost, nil
 }

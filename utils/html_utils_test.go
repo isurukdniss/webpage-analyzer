@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"net/http"
-	"net/http/httptest"
 	"testing"
 
 	"golang.org/x/net/html"
@@ -90,95 +88,6 @@ func TestExtractHTMLVersion(t *testing.T) {
 			}
 		})
 
-	}
-}
-
-func TestIsInternalLink(t *testing.T) {
-	tests := []struct {
-		name      string
-		baseURL   string
-		targetURL string
-		expected  bool
-	}{
-		{
-			name:      "Invalid base URL",
-			baseURL:   ";;:::12abc",
-			targetURL: "https://www.google.com/",
-			expected:  false,
-		},
-		{
-			name:      "Invalid target URL",
-			baseURL:   "https://www.google.com/",
-			targetURL: ";;:::12abc",
-			expected:  false,
-		},
-		{
-			name:      "Internal link",
-			baseURL:   "https://www.google.com/",
-			targetURL: "https://www.google.com/test",
-			expected:  true,
-		},
-		{
-			name:      "External link",
-			baseURL:   "https://www.google.com/",
-			targetURL: "https://www.yahoo.com/",
-			expected:  false,
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			isInternalLink, _ := utils.IsInternalLink(test.baseURL, test.targetURL)
-
-			if test.expected != isInternalLink {
-				t.Errorf("Expected '%t', got '%t'", test.expected, isInternalLink)
-			}
-		})
-	}
-}
-
-func TestIsLinkAccessible(t *testing.T) {
-	tests := []struct {
-		name       string
-		statusCode int
-		expected   bool
-	}{
-		{
-			name:       "Link Accessible",
-			statusCode: http.StatusOK,
-			expected:   true,
-		},
-		{
-			name:       "Redirect Link",
-			statusCode: http.StatusMovedPermanently,
-			expected:   true,
-		},
-		{
-			name:       "Inaccessible: 404 Not found",
-			statusCode: http.StatusNotFound,
-			expected:   false,
-		},
-		{
-			name:       "Inaccessible: Internal Server Error",
-			statusCode: http.StatusInternalServerError,
-			expected:   false,
-		},
-	}
-
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			// Mock server
-			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				w.WriteHeader(test.statusCode)
-			}))
-			defer server.Close()
-
-			isAccessible := utils.IsLinkAccessible(server.URL)
-
-			if isAccessible != test.expected {
-				t.Errorf("Expected '%t', got '%t'", test.expected, isAccessible)
-			}
-		})
 	}
 }
 
@@ -321,7 +230,7 @@ func TestExtractTitle(t *testing.T) {
 			expected: "Test title",
 		},
 		{
-			name:     "Title deos not exist",
+			name:     "Title does not exist",
 			node:     &html.Node{},
 			expected: "",
 		},

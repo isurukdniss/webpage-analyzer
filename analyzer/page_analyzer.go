@@ -12,7 +12,8 @@ import (
 
 var utilsInstance utils.UtilProvider = &utils.Utils{}
 
-type AnalyzerResult struct {
+// Result represents the webpage analyzer output data structure
+type Result struct {
 	HTMLVersion        string
 	Title              string
 	HeadingsCount      map[string]int
@@ -24,35 +25,38 @@ type AnalyzerResult struct {
 	ExternalLinks      []string
 }
 
+// PageAnalyzer defines the interface for analyzing a webpage based on its URL
 type PageAnalyzer interface {
-	Analyze(pageUrl string) *AnalyzerResult
+	Analyze(pageURL string) *Result
 }
 
+// Analyzer provides function to analyze the HTML content of a given URL
 type Analyzer struct{}
 
-func (a *Analyzer) Analyze(pageUrl string) *AnalyzerResult {
-	res := &AnalyzerResult{
+// Analyze function analyzes the HTML content of the website of a given URL
+func (a *Analyzer) Analyze(pageURL string) *Result {
+	res := &Result{
 		HeadingsCount: make(map[string]int),
 	}
+	// To track the visited links
 	visited := make(map[string]bool)
 
-	// fetch url
-	body, err := utilsInstance.FetchURL(pageUrl)
+	body, err := utilsInstance.FetchURL(pageURL)
 	if err != nil {
 		res.ErrorMessage = handleErrorMsg(err)
 	}
 
-	// parse html
 	doc, err := utilsInstance.ParseHTML(body)
 	if err != nil {
-		res.ErrorMessage = fmt.Sprintf("Error analyzing the URL: %v", err)
+		res.ErrorMessage = handleErrorMsg(err)
 	}
 
 	res.HTMLVersion = utilsInstance.ExtractHTMLVersion(body)
 
-	analyzeDoc(doc, pageUrl, visited, res)
+	analyzeDoc(doc, pageURL, visited, res)
 
 	externalLinks := res.ExternalLinks
+	// Inaccessible links check is performed only for external links
 	inAccessibleLinksCount := getInaccessibleLinksCount(externalLinks)
 	res.InAccessibleLinks = inAccessibleLinksCount
 
@@ -60,10 +64,11 @@ func (a *Analyzer) Analyze(pageUrl string) *AnalyzerResult {
 
 }
 
-func analyzeDoc(n *html.Node, baseURL string, visited map[string]bool, res *AnalyzerResult) {
+func analyzeDoc(n *html.Node, baseURL string, visited map[string]bool, res *Result) {
 	if n.Type == html.ElementNode {
 		switch n.Data {
 		case "title":
+			// some webpage's html may contain multiple <title> tags. eg. inside svg tags.
 			if res.Title == "" {
 				res.Title = utilsInstance.ExtractTitle(n)
 			}
@@ -75,7 +80,7 @@ func analyzeDoc(n *html.Node, baseURL string, visited map[string]bool, res *Anal
 			link := utilsInstance.ExtractAttribute(n, "href")
 			if !visited[link] {
 				visited[link] = true
-				if isInternal, _ := utilsInstance.IsInternalLink(baseURL, link); isInternal { // Handle error
+				if isInternal := utilsInstance.IsInternalLink(baseURL, link); isInternal {
 					res.InternalLinksCount++
 				} else {
 					res.ExternalLinksCount++
@@ -92,6 +97,7 @@ func analyzeDoc(n *html.Node, baseURL string, visited map[string]bool, res *Anal
 
 func getInaccessibleLinksCount(urlList []string) int {
 	var wg sync.WaitGroup
+	//mutex is used to lock the 'count' when it is updated by multiple goroutines
 	var mu sync.Mutex
 	var count int
 
