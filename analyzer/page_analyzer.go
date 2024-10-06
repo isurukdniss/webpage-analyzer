@@ -68,7 +68,7 @@ func analyzeDoc(n *html.Node, baseURL string, visited map[string]bool, res *Resu
 	if n.Type == html.ElementNode {
 		switch n.Data {
 		case "title":
-			// some webpage's html may contain multiple <title> tags. eg. inside svg tags.
+			// Some webpage's html may contain multiple <title> tags. eg. <title> tag inside svg tags.
 			if res.Title == "" {
 				res.Title = utilsInstance.ExtractTitle(n)
 			}
