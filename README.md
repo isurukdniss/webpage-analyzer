@@ -51,7 +51,7 @@ make clean
 ```
 
 ## Continues Integration
-Continues Integration is achieved using the GitHub Actions. A workflow builds the project and runs all unit tests when a new commit is pushed to the `main` branch or a pull request is merged into the `main` branch.
+Continues Integration is achieved using the GitHub Actions. A workflow builds the project and runs all unit tests when a new commit is pushed to the `main` branch, a pull request is raised or merged into the `main` branch.
 
 Workflow runs can be found [here](https://github.com/isurukdniss/webpage-analyzer/actions). 
 
