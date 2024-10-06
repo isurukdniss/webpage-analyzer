@@ -20,7 +20,7 @@ The **Webpage Analyzer** is a Go based web application that allows users to anal
 git clone https://github.com/isurukdniss/webpage-analyzer
 ```
 
-#### Install the Dependancies
+#### Install the Dependencies
 ```
 go mod tidy
 ```
@@ -51,14 +51,20 @@ make clean
 ```
 
 ## Continues Integration
-The Continues Integration is achieved using the GitHub Actions. A workflow builds the project and run all unit test when a new commit is pushed to the `main` branch or a pull request is merged to the `main` branch.
+Continues Integration is achieved using the GitHub Actions. A workflow builds the project and runs all unit tests when a new commit is pushed to the `main` branch or a pull request is merged into the `main` branch.
 
 Workflow runs can be found [here](https://github.com/isurukdniss/webpage-analyzer/actions). 
+
+## Assumptions
+- When checking the accessibility of a given URL, if the http.Head request times out after 5 seconds, the URL is considered inaccessible.
+- When checking for the presence of a login form, any form containing an `<input>` element with type password is considered to have a login form.
+- When extracting the title of a webpage, it accounts for scenarios where the HTML may have multiple `<title>` elements (e.g., within `<svg>` elements). The application retrieves the first occurrence of the `<title>` element and returns its value.
+
 
 ## Suggested Improvements
 - Improving the UI with more advanced styling or using a front-end framework like React or Vue.
 - Containerization of the application.
-- Configure automated deployment to a cloud platform (eg. GCP CloudRun).
+- Configure automated deployment to a cloud platform (eg. GCP CloudRun, AWS Lambda, etc.).
 
 
 
